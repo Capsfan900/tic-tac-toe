@@ -1,162 +1,123 @@
-//Dom references 
 
 
-//intial game setup function (objects an function prototypes / methods )
-
-
-//a couple global scope variables
-const board = [];
-const currentPLayer = "X";
-
-    const setupGame = () => {
-            //game object body
-            const rows = 3;
-            const columns = 3;
-             // Create board
-    
-            for (let row = 0; row < rows; row++) {
-            let newRow = [];
-                for (let col = 0; col < columns; col++) {
-                 // JS
-                    newRow.push("X");
-                // HTML
-             }
-                board.push(newRow);
-            }
-    
-        //prompt players for Names (player 1 and player 2)
-        const getPlayerNames = () => {
-            //const player1Name = prompt("Enter Player 1 Name:");
-           // const player2Name = prompt("Enter Player 2 Name:");
-            //return [{ name: player1Name, key: 'X' }, { name: player2Name, key: 'O' }];
-            //gather for input and assign
-            //input to P1 and P2 
-        };
-        
-        //get board function for when UI is implemented
-        const getBoard = () => board;
-        
-        const printBoard = () => {
-            //console.clear() make this togglable eventually
-            console.log("")
-            console.log("Stelly's Console Tic-Tac-Toe"); // Add label before the grid
-            console.log("")
-            console.log(board.map(row => row.join(' | ')).join('\n---------\n'));
-            //let player1 = prompt("Chose Your Name Player (X)");
-            //let player2 = prompt("Chose Your Name Player (O)");
-            console.log("");
-            //console.log(`Player X Name: ${player1}`);
-            //console.log(`Player O Name: ${player2}`);
-        }
-        
-        const resetBoard = () =>{
-            for(let rows = 0; rows < 3; rows++){
-                for(let columns = 0; columns < 3; columns++){
-                    board[rows][columns] = " ";
-                }
-            }
-            console.log("......reseting board")
-        }
-       
-            return {getBoard, printBoard, getPlayerNames,resetBoard};
-    };
-    
-
-
-
-//-------------------------------------------------------------------//
-
-    const gameController = () =>{
-
-            const checkForTie = () =>{
-                let freeSpaces = 9;
-                for(let i = 0; i < 3; i++)  {
-                    for(let j = 0; j < 3; j++){
-                        console.log(`Checking cell [${i}, ${j}]`);  // Debug log
-                        if(board[i][j] != " "){
-                            freeSpaces--;
-                        console.log(`Found occupied cell at [${i}, ${j}]`);  // Debug log
-                            
-                        }
-                    }
-                }
-                
-            }
-            //display winner and trigger board reset
-        
-
-        const setPiece = () => {
-            let rowChoice = prompt("enter a row #(1 -3)");
-            let colChoice = prompt("enter a column #(1-3)");
-            console.log(colChoice, rowChoice);
-
-        }
-
-        const checkForWin = () => {
-
-        }
-       
-        return {checkForTie, setPiece, checkForWin};
-
+const setupGame = (() => {
+    const rows = 3;
+    const columns = 3;
+    const board = [];
+  
+    // Create board
+    for (let row = 0; row < rows; row++) {
+      let newRow = [];
+      for (let col = 0; col < columns; col++) {
+        newRow.push(" ");
+      }
+      board.push(newRow);
     }
-
-
-
-
-
-
-
-
-    
-//--------------------------program body-------------------------------//
-
-
-
-
-
-//instantiate setupGame and gameController objects
-const instanceOfSetupGame  = setupGame();
-const gameControllerInstance = gameController();
-//destructoring methods using ,dot, object or bracket notation 
-//in this case im using dot notation
-instanceOfSetupGame.getPlayerNames();
-instanceOfSetupGame.printBoard();
-//instanceOfSetupGame.resetBoard();
-instanceOfSetupGame.getBoard();
-instanceOfSetupGame.printBoard();
-gameControllerInstance.checkForTie();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
+    const getPlayerNames = () => {
+      const player1Name = prompt("Enter Player 1 Name:");
+      const player2Name = prompt("Enter Player 2 Name:");
+      return [{ name: player1Name, key: 'X' }, { name: player2Name, key: 'O' }];
+    };
+  
+    const getBoard = () => board;
+  
+    const printBoard = () => {
+      console.clear();
+      console.log("Stelly's Console Tic-Tac-Toe");
+      console.log("");
+      console.log(board.map(row => row.join(' | ')).join('\n---------\n'));
+      console.log("");
+    };
+  
+    const resetBoard = () => {
+      for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+          board[row][col] = " ";
+        }
+      }
+      console.log("......reseting board");
+    };
+  
+    return { getBoard, printBoard, getPlayerNames, resetBoard };
+  })();
+  
+  // gameController as IIFE
+  const gameController = (() => {
+    let currentPlayer = "X";
+    const players = setupGame.getPlayerNames();
+  
+    const checkForTie = () => {
+      let freeSpaces = 0;
+      for (let i = 0; i < 3; i++) {
+        for (let j = 0; j < 3; j++) {
+          if (setupGame.getBoard()[i][j] === " ") {
+            freeSpaces++;
+          }
+        }
+      }
+  
+      if (freeSpaces === 0) {
+        console.log("It's a tie!");
+        setupGame.resetBoard();
+      }
+    };
+  
+    const setPiece = () => {
+      let rowChoice = parseInt(prompt("Enter a row # (1-3)")) - 1;
+      let colChoice = parseInt(prompt("Enter a column # (1-3)")) - 1;
+  
+      if (setupGame.getBoard()[rowChoice][colChoice] === " ") {
+        setupGame.getBoard()[rowChoice][colChoice] = currentPlayer;
+        setupGame.printBoard();
+        checkForWin();
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
+      } else {
+        console.log("That cell is already occupied. Try again.");
+        setPiece();
+      }
+    };
+  
+    const checkForWin = () => {
+      const board = setupGame.getBoard();
+  
+      // Check rows
+      for (let i = 0; i < 3; i++) {
+        if (board[i][0] !== " " && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
+          console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+          setupGame.resetBoard();
+          return;
+        }
+      }
+  
+      // Check columns
+      for (let i = 0; i < 3; i++) {
+        if (board[0][i] !== " " && board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
+          console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+          setupGame.resetBoard();
+          return;
+        }
+      }
+  
+      // Check diagonals
+      if (board[0][0] !== " " && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
+        console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+        setupGame.resetBoard();
+        return;
+      }
+  
+      if (board[0][2] !== " " && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
+        console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+        setupGame.resetBoard();
+        return;
+      }
+  
+      checkForTie();
+    };
+  
+    return { setPiece };
+  })();
+  
+  // Start the game
+  setupGame.printBoard();
+  gameController.setPiece();
