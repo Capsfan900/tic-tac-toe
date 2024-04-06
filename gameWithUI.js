@@ -83,7 +83,6 @@ const setupGame = (() => {
 // gameController as IIFE
 const gameController = (() => {
     //intial player tracker
-    let currentPlayer = "X";
     const checkForTie = () => {
         let freeSpaces = 0;
         for (let i = 0; i < 3; i++) {
@@ -110,10 +109,9 @@ const gameController = (() => {
         }
 
         // Get current player
+        gameController.currentPlayer = gameController.currentPlayer === "X" ? "O" : "X";
         const currentPlayer = gameController.currentPlayer;
         // Update board data
-        setupGame.getBoard()[cell.dataset.row][cell.dataset.col] = currentPlayer;
-
         // Visually update cell content
         cell.textContent = currentPlayer;
 
@@ -122,7 +120,6 @@ const gameController = (() => {
         checkForTie();
 
         // Switch player
-        gameController.currentPlayer = gameController.currentPlayer === "X" ? "O" : "X";
         console.log(boardInstance)
     };
 
