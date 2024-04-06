@@ -1,7 +1,7 @@
 //global scope variables and dom references 
 
 const gameBoard = document.querySelector(".game-board");
-
+const playerTitles = document.getElementById("players");
 
 //setutgame IFFE
 const setupGame = (() => {
@@ -22,7 +22,7 @@ const setupGame = (() => {
         const player1Name = prompt("Enter Player 1 Name:");
         const player2Name = prompt("Enter Player 2 Name:");
 
-        const playerNames = {
+        const player1 = {
             name: player1Name,
             key: 'X'
         };
@@ -33,10 +33,11 @@ const setupGame = (() => {
         };
 
         // Combine both objects (assuming you need a single object)
-        return { playerNames, player2 };
+        return { player1, player2 };
     };
 
     const createBoardElement = () => {
+
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < columns; col++) {
                 const cell = document.createElement('div');
@@ -47,12 +48,12 @@ const setupGame = (() => {
                 console.log(gameBoard);
                 gameBoard.appendChild(cell);
             }
+
         }
+
     };
 
-    const getCurrElementID = () => {
 
-    }
 
     const resetBoard = () => {
         for (let row = 0; row < 3; row++) {
@@ -60,7 +61,7 @@ const setupGame = (() => {
                 board[row][col] = " ";
             }
         }
-
+        cell.textContent = " ";
         alert("......reseting board");
     };
 
@@ -110,7 +111,6 @@ const gameController = (() => {
 
         // Get current player
         const currentPlayer = gameController.currentPlayer;
-
         // Update board data
         setupGame.getBoard()[cell.dataset.row][cell.dataset.col] = currentPlayer;
 
@@ -137,6 +137,7 @@ const gameController = (() => {
                 console.log("game end");
                 setupGame.resetBoard();
                 setupGame.createBoardElement();
+                alert(`${currentPlayer} Wins!!`)
                 return;
             }
         }
@@ -148,6 +149,7 @@ const gameController = (() => {
                 console.log("game end");
                 setupGame.resetBoard();
                 setupGame.createBoardElement();
+                alert(`${currentPlayer} Wins!!`)
                 return;
             }
         }
@@ -158,6 +160,7 @@ const gameController = (() => {
             console.log("game end")
             setupGame.resetBoard();
             setupGame.createBoardElement();
+            alert(`${currentPlayer} Wins!!`)
             return;
         }
 
@@ -166,6 +169,7 @@ const gameController = (() => {
             console.log("game end");
             setupGame.resetBoard();
             setupGame.createBoardElement();
+            alert(`${currentPlayer} Wins!!`)
             return;
         }
 
@@ -213,6 +217,10 @@ const uiController = (() => {
 
 
 // Start the game
-setupGame.createBoardElement();
-uiController.styleBoardElements();
-uiController.handleClicks();
+
+window.onload = () => {
+    setupGame.createBoardElement();
+    uiController.styleBoardElements();
+    uiController.handleClicks();
+}
+
