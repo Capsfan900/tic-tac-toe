@@ -5,38 +5,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <script src="main.js"></script>
+    <script defer src="gameWithUI.js"></script>
     <link rel='stylesheet' href="style.css">
 </head>
 <div class="header"></div>
 
 <body>
+    <div class="player-names">
+        <h1 id="players"></h1>
+    </div>
+    <h1>Tic-Tac-Toe</h1>
     <div class="main-wrapper">
-        <h1>Tic-Tac-Toe</h1>
+
         <div class="game-board">
 
 
+
         </div>
+
+        <div class="left"></div>
+        <div class="right"></div>
     </div>
     <div class="footer"></div>
-    <dialog>
-        <form>
-            <label>Player One<br>
-                <input type="text" id="playerName" placeholder="PlayerName">
-            </label>
-            <label><br>
-                <input type="text" id="bookAuthor" placeholder="Author">
-            </label>
-            <label>Number Of Pages<br>
-                <input type="number" id="bookPages" placeholder="Pages">
-            </label>
-            <label for="bookRead">
-                <input type="checkbox" id="bookRead">
-                Have You Read This Book?
-            </label>
-            <button type="submit" id="addBook">Add Book</button>
-        </form>
-    </dialog>
 </body>
 
 </html>

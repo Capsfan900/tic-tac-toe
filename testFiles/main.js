@@ -92,7 +92,7 @@ const gameController = (() => {
     // Check rows
     for (let i = 0; i < 3; i++) {
       if (board[i][0] !== " " && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
-        console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+        console.log(`${currentPlayer} Wins! Game Over!`);
         setupGame.resetBoard();
         return;
       }
@@ -101,7 +101,7 @@ const gameController = (() => {
     // Check columns
     for (let i = 0; i < 3; i++) {
       if (board[0][i] !== " " && board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
-        console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+        console.log(`${currentPlayer} Wins! Game Over!`);
         setupGame.resetBoard();
         return;
       }
@@ -109,13 +109,13 @@ const gameController = (() => {
 
     // Check diagonals
     if (board[0][0] !== " " && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
-      console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+      console.log(`${currentPlayer} Wins! Game Over!`);
       setupGame.resetBoard();
       return;
     }
 
     if (board[0][2] !== " " && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
-      console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
+      console.log(`${currentPlayer} Wins! Game Over!`);
       setupGame.resetBoard();
       return;
     }
@@ -130,6 +130,11 @@ const gameController = (() => {
 
 // Start the game
 setupGame.printBoard();
-gameController.setPiece();
+
+
+
+
+
+
 
 

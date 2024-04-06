@@ -14,6 +14,7 @@ body {
     height: 100vh;
     width: 100%;
     display: flex;
+    grid-template-columns: 1fr 8fr 1fr;
     justify-content: center;
     align-items: center;
     flex-direction: column;
@@ -24,6 +25,7 @@ body {
     width: 100%;
     height: 100px;
     background-color: black;
+    margin-bottom: 10px;
 
 }
 
@@ -39,10 +41,16 @@ body {
 .game-score {}
 
 .game-board {
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-self: center;
+    flex-wrap: wrap;
     height: 500px;
     width: 500px;
     background-color: blue;
     margin-bottom: 200px;
+    gap: 15px;
 }
 
 .footer {
@@ -50,4 +58,15 @@ body {
     height: 100px;
     width: 100%;
     background-color: orange;
+}
+
+.cell:hover {
+    background-color: blueviolet;
+    opacity: 70%;
+}
+
+.player-names {
+    background-color: orange;
+    height: 100px;
+    width: 200px;
 }
