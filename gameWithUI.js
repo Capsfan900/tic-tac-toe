@@ -21,12 +21,20 @@ const setupGame = (() => {
     const getPlayerNames = () => {
         const player1Name = prompt("Enter Player 1 Name:");
         const player2Name = prompt("Enter Player 2 Name:");
-        return { name: player1Name, key: 'X' }, { name: player2Name, key: 'O' };
+
+        const playerNames = {
+            name: player1Name,
+            key: 'X'
+        };
+
+        const player2 = {
+            name: player2Name,
+            key: 'O'
+        };
+
+        // Combine both objects (assuming you need a single object)
+        return { playerNames, player2 };
     };
-
-    let playerNames;
-
-    const getBoard = () => board;
 
     const createBoardElement = () => {
         for (let row = 0; row < rows; row++) {
@@ -42,22 +50,25 @@ const setupGame = (() => {
         }
     };
 
+    const getCurrElementID = () => {
+
+    }
+
     const resetBoard = () => {
         for (let row = 0; row < 3; row++) {
             for (let col = 0; col < 3; col++) {
                 board[row][col] = " ";
             }
         }
-        console.log("......reseting board");
+
+        alert("......reseting board");
     };
 
+    const getBoard = () => board;
+
+
     return {
-        getBoard, createBoardElement, getPlayerNames: () => {
-            if (!playerNames) { // Check if player names are already retrieved
-                playerNames = getPlayerNames();
-            }
-            return playerNames;
-        }, resetBoard
+        getBoard, createBoardElement, getPlayerNames, resetBoard
     };
 })();
 
@@ -68,12 +79,10 @@ const setupGame = (() => {
 
 
 
-
 // gameController as IIFE
 const gameController = (() => {
+    //intial player tracker
     let currentPlayer = "X";
-    const players = setupGame.getPlayerNames();
-
     const checkForTie = () => {
         let freeSpaces = 0;
         for (let i = 0; i < 3; i++) {
@@ -87,23 +96,36 @@ const gameController = (() => {
         if (freeSpaces === 0) {
             console.log("It's a tie!");
             setupGame.resetBoard();
+            setPiece.createBoardElement();
         }
     };
 
-    const setPiece = () => {
-
-        let rowChoice = parseInt(prompt("Enter a row # (1-3)")) - 1;
-        let colChoice = parseInt(prompt("Enter a column # (1-3)")) - 1;
-
-        if (setupGame.getBoard()[rowChoice][colChoice] === " ") {
-            setupGame.getBoard()[rowChoice][colChoice] = currentPlayer;
-            setupGame.printBoard();
-            checkForWin()
-            currentPlayer = currentPlayer === "X" ? "O" : "X";
-        } else {
+    const setPiece = (cell) => {
+        let boardInstance = setupGame.getBoard();
+        // Check if cell is already occupied
+        if (setupGame.getBoard()[cell.dataset.row][cell.dataset.col] !== " ") {
             console.log("That cell is already occupied. Try again.");
+            return;
         }
+
+        // Get current player
+        const currentPlayer = gameController.currentPlayer;
+
+        // Update board data
+        setupGame.getBoard()[cell.dataset.row][cell.dataset.col] = currentPlayer;
+
+        // Visually update cell content
+        cell.textContent = currentPlayer;
+
+        // Check for win or tie
+        checkForWin();
+        checkForTie();
+
+        // Switch player
+        gameController.currentPlayer = gameController.currentPlayer === "X" ? "O" : "X";
+        console.log(boardInstance)
     };
+
 
     const checkForWin = () => {
         const board = setupGame.getBoard();
@@ -114,7 +136,7 @@ const gameController = (() => {
                 //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
                 console.log("game end");
                 setupGame.resetBoard();
-                setupGame.printBoard();
+                setupGame.createBoardElement();
                 return;
             }
         }
@@ -125,9 +147,7 @@ const gameController = (() => {
                 //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
                 console.log("game end");
                 setupGame.resetBoard();
-                setupGame.printBoard();
-
-
+                setupGame.createBoardElement();
                 return;
             }
         }
@@ -137,8 +157,7 @@ const gameController = (() => {
             //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
             console.log("game end")
             setupGame.resetBoard();
-            setupGame.printBoard();
-
+            setupGame.createBoardElement();
             return;
         }
 
@@ -146,8 +165,7 @@ const gameController = (() => {
             //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
             console.log("game end");
             setupGame.resetBoard();
-            setupGame.printBoard();
-
+            setupGame.createBoardElement();
             return;
         }
 
@@ -164,12 +182,8 @@ const gameController = (() => {
 
 
 const uiController = (() => {
-
     const styleBoardElements = () => {
-        const wow = setupGame.getPlayerNames();
-        console.log(wow);
         const cells = document.querySelectorAll(".cell");
-        const title = document.querySelector("#players");
         cells.forEach((cell) => {
             cell.style.width = '150px';
             cell.style.height = '150px';
@@ -183,12 +197,14 @@ const uiController = (() => {
     };
 
     const handleClicks = () => {
-        const clickedCells = document.querySelector(".cell");
-        clickedCells.addEventListener(function () {
-
+        const clickedCells = document.querySelectorAll(".cell");
+        clickedCells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                // Pass the clicked cell element to setPiece
+                gameController.setPiece(cell);
+            });
         });
-
-    }
+    };
 
     return { styleBoardElements, handleClicks };
 })();
@@ -199,3 +215,4 @@ const uiController = (() => {
 // Start the game
 setupGame.createBoardElement();
 uiController.styleBoardElements();
+uiController.handleClicks();
