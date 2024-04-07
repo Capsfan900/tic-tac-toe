@@ -108,16 +108,14 @@ const gameController = (() => {
             return;
         }
 
+        setupGame.getBoard()[cell.dataset.rowe][cell.dataset.col] = currentPlayer;
+
         // Get current player
         gameController.currentPlayer = gameController.currentPlayer === "X" ? "O" : "X";
         const currentPlayer = gameController.currentPlayer;
         // Update board data
         // Visually update cell content
         cell.textContent = currentPlayer;
-        const row = parseInt(cell.dataset.row);
-        const col = parseInt(cell.dataset.col);
-        setupGame.getBoard()[row][col] = currentPlayer;
-        //board[row][col] = currentPlayer;
 
         // Check for win or tie
         checkForWin();
