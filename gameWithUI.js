@@ -1,9 +1,8 @@
 //global scope variables and dom references 
-
 const gameBoard = document.querySelector(".game-board");
 const playerTitles = document.getElementById("players");
 
-//setutgame IFFE
+//setupGame IIFE
 const setupGame = (() => {
     const rows = 3;
     const columns = 3;
@@ -31,73 +30,47 @@ const setupGame = (() => {
             name: player2Name,
             key: 'O'
         };
-
-        // Combine both objects (assuming you need a single object)
         return { player1, player2 };
     };
 
     const createBoardElement = () => {
-
         for (let row = 0; row < rows; row++) {
             for (let col = 0; col < columns; col++) {
                 const cell = document.createElement('div');
                 cell.classList.add('cell');
                 cell.dataset.row = row;
                 cell.dataset.col = col;
-                console.log("appending Cell...");
-                console.log(gameBoard);
                 gameBoard.appendChild(cell);
             }
-
         }
-
     };
 
-
-
     const resetBoard = () => {
+        const cells = gameBoard.querySelectorAll(".cell");
+        cells.forEach(cell => {
+            cell.textContent = "";
+        });
+
         for (let row = 0; row < 3; row++) {
             for (let col = 0; col < 3; col++) {
                 board[row][col] = " ";
             }
         }
-        cell.textContent = " ";
+        alert("game has ended!!");
         alert("......reseting board");
     };
 
     const getBoard = () => board;
-
-
-    return {
-        getBoard, createBoardElement, getPlayerNames, resetBoard
-    };
+    const getCells = () => gameBoard;
+    return { getBoard, createBoardElement, getPlayerNames, resetBoard, getCells };
 })();
-
-
-
-
-
-
-
 
 // gameController as IIFE
 const gameController = (() => {
-    //intial player tracker
-    const checkForTie = () => {
-        let freeSpaces = 0;
-        for (let i = 0; i < 3; i++) {
-            for (let j = 0; j < 3; j++) {
-                if (setupGame.getBoard()[i][j] === " ") {
-                    freeSpaces++;
-                }
-            }
-        }
+    let currentPlayer;
 
-        if (freeSpaces === 0) {
-            console.log("It's a tie!");
-            setupGame.resetBoard();
-            setPiece.createBoardElement();
-        }
+    const initializePlayer = (players) => {
+        currentPlayer = players.player1.key;
     };
 
     const setPiece = (cell) => {
@@ -107,37 +80,26 @@ const gameController = (() => {
             console.log("That cell is already occupied. Try again.");
             return;
         }
-
         // Get current player
-        gameController.currentPlayer = gameController.currentPlayer === "X" ? "O" : "X";
-        const currentPlayer = gameController.currentPlayer;
-        // Update board data
+        currentPlayer = currentPlayer === "X" ? "O" : "X";
         // Visually update cell content
         cell.textContent = currentPlayer;
         const row = parseInt(cell.dataset.row);
         const col = parseInt(cell.dataset.col);
         setupGame.getBoard()[row][col] = currentPlayer;
-        //board[row][col] = currentPlayer;
-
-        // Check for win or tie
+        // Check for win or tie w function calls
         checkForWin();
         checkForTie();
-
         // Switch player
-        console.log(boardInstance)
+        console.log(boardInstance) //debugg yo
     };
-
 
     const checkForWin = () => {
         const board = setupGame.getBoard();
-
         // Check rows
         for (let i = 0; i < 3; i++) {
             if (board[i][0] !== " " && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
-                //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
-                console.log("game end");
                 setupGame.resetBoard();
-                setupGame.createBoardElement();
                 alert(`${currentPlayer} Wins!!`)
                 return;
             }
@@ -146,10 +108,8 @@ const gameController = (() => {
         // Check columns
         for (let i = 0; i < 3; i++) {
             if (board[0][i] !== " " && board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
-                //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
                 console.log("game end");
                 setupGame.resetBoard();
-                setupGame.createBoardElement();
                 alert(`${currentPlayer} Wins!!`)
                 return;
             }
@@ -157,19 +117,15 @@ const gameController = (() => {
 
         // Check diagonals
         if (board[0][0] !== " " && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
-            //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
             console.log("game end")
             setupGame.resetBoard();
-            setupGame.createBoardElement();
             alert(`${currentPlayer} Wins!!`)
             return;
         }
 
         if (board[0][2] !== " " && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
-            //console.log(`${players[currentPlayer === "X" ? 0 : 1].name} (${currentPlayer}) wins!`);
             console.log("game end");
             setupGame.resetBoard();
-            setupGame.createBoardElement();
             alert(`${currentPlayer} Wins!!`)
             return;
         }
@@ -177,14 +133,24 @@ const gameController = (() => {
         checkForTie();
     };
 
-    return { setPiece };
+    const checkForTie = () => {
+        let freeSpaces = 0;
+        for (let i = 0; i < 3; i++) {
+            for (let j = 0; j < 3; j++) {
+                if (setupGame.getBoard()[i][j] === " ") {
+                    freeSpaces++;
+                }
+            }
+        }
+        //checks for any free spaces
+        if (freeSpaces === 0) {
+            console.log("It's a tie!");
+            setupGame.resetBoard();
+        }
+    };
+
+    return { setPiece, initializePlayer, currentPlayer };
 })();
-
-
-
-
-
-
 
 const uiController = (() => {
     const styleBoardElements = () => {
@@ -214,14 +180,11 @@ const uiController = (() => {
     return { styleBoardElements, handleClicks };
 })();
 
-
-
-
 // Start the game
-
 window.onload = () => {
+    const players = setupGame.getPlayerNames();
+    gameController.initializePlayer(players);
     setupGame.createBoardElement();
     uiController.styleBoardElements();
     uiController.handleClicks();
 }
-
