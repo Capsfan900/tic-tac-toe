@@ -65,10 +65,15 @@ const setupGame = (() => {
     return { getBoard, createBoardElement, getPlayerNames, resetBoard, getCells };
 })();
 
+
+
 // gameController as IIFE
 const gameController = (() => {
+    //instantiate current player
     let currentPlayer;
 
+    //we are assuming the players parameter here is going to be an object
+    //its not established here so it was confusing coming back to this code
     const initializePlayer = (players) => {
         currentPlayer = players.player1.key;
     };
@@ -80,19 +85,21 @@ const gameController = (() => {
             console.log("That cell is already occupied. Try again.");
             return;
         }
-        // Get current player
+        //makes the current player the opposite of whatver it is (aka swicthing turns)
         currentPlayer = currentPlayer === "X" ? "O" : "X";
         // Visually update cell content
         cell.textContent = currentPlayer;
         const row = parseInt(cell.dataset.row);
         const col = parseInt(cell.dataset.col);
+        //set the currently selected positon to currenct player(X or O)
         setupGame.getBoard()[row][col] = currentPlayer;
         // Check for win or tie w function calls
         checkForWin();
         checkForTie();
-        // Switch player
         console.log(boardInstance) //debugg yo
     };
+
+
 
     const checkForWin = () => {
         const board = setupGame.getBoard();
@@ -169,13 +176,17 @@ const uiController = (() => {
 
     const handleClicks = () => {
         const clickedCells = document.querySelectorAll(".cell");
+        //adds event listeners for all cells from "clickedCells"
         clickedCells.forEach(cell => {
             cell.addEventListener('click', () => {
                 // Pass the clicked cell element to setPiece
                 gameController.setPiece(cell);
+
             });
         });
     };
+
+
 
     return { styleBoardElements, handleClicks };
 })();
@@ -188,3 +199,7 @@ window.onload = () => {
     uiController.styleBoardElements();
     uiController.handleClicks();
 }
+
+
+
+

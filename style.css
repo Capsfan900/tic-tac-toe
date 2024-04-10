@@ -3,38 +3,35 @@
 
 }
 
-h2 {
-    align-items: center;
 
+h1 {
+    color: red;
+}
+
+h2 {
+    display: flex;
 }
 
 
 body {
-    background-color: red;
+    display: grid;
+    grid-template-rows: auto 3fr auto;
     height: 100vh;
-    width: 100%;
-    display: flex;
-    grid-template-columns: 1fr 8fr 1fr;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
 }
 
 .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     height: 100px;
     background-color: black;
-    margin-bottom: 10px;
-
+    grid-template-rows: 1/1;
 }
 
 .main-wrapper {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 971px;
+    height: 500px;
     width: 100%;
 }
 
@@ -51,6 +48,7 @@ body {
     background-color: blue;
     margin-bottom: 200px;
     gap: 15px;
+    grid-column: 1/3;
 }
 
 .footer {
@@ -60,13 +58,28 @@ body {
     background-color: orange;
 }
 
+.cell {
+    display: flex;
+    justify-content: center;
+    align-self: center;
+}
+
 .cell:hover {
     background-color: blueviolet;
     opacity: 70%;
 }
 
-.player-names {
-    background-color: orange;
-    height: 100px;
-    width: 200px;
+
+
+
+.right-grid {
+    display: flex;
+    height: 100%;
+    width: 250px;
+}
+
+.left-grid {
+    display: flex;
+    height: 100%;
+    width: 250px;
 }
