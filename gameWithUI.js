@@ -67,11 +67,10 @@ const setupGame = (() => {
 
 
 
-// gameController as IIFE
+// gameController  IIFE
 const gameController = (() => {
     //instantiate current player
     let currentPlayer;
-
     //we are assuming the players parameter here is going to be an object
     //its not established here so it was confusing coming back to this code
     const initializePlayer = (players) => {
@@ -87,11 +86,9 @@ const gameController = (() => {
         }
         //makes the current player the opposite of whatver it is (aka swicthing turns)
         currentPlayer = currentPlayer === "X" ? "O" : "X";
-        // Visually update cell content
+        // assign current player to text content
         cell.textContent = currentPlayer;
-        const row = parseInt(cell.dataset.row);
-        const col = parseInt(cell.dataset.col);
-        //set the currently selected positon to currenct player(X or O)
+        //calls .getBoard method -> accesses current board position -> sets it to current player
         setupGame.getBoard()[row][col] = currentPlayer;
         // Check for win or tie w function calls
         checkForWin();
@@ -190,6 +187,8 @@ const uiController = (() => {
 
     return { styleBoardElements, handleClicks };
 })();
+
+
 
 // Start the game
 window.onload = () => {

@@ -62,6 +62,10 @@ body {
     display: flex;
     justify-content: center;
     align-self: center;
+    font-style: initial;
+    text-align: center;
+    height: 50px;
+    width: 50px;
 }
 
 .cell:hover {
