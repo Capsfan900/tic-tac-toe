@@ -86,9 +86,11 @@ const gameController = (() => {
         }
         //makes the current player the opposite of whatver it is (aka swicthing turns)
         currentPlayer = currentPlayer === "X" ? "O" : "X";
-        // assign current player to text content
+        // Visually update cell content
         cell.textContent = currentPlayer;
-        //calls .getBoard method -> accesses current board position -> sets it to current player
+        //grabbing the row and column of current cell clicked
+        const row = parseInt(cell.dataset.row);
+        const col = parseInt(cell.dataset.col);
         setupGame.getBoard()[row][col] = currentPlayer;
         // Check for win or tie w function calls
         checkForWin();
