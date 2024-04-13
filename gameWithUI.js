@@ -1,6 +1,14 @@
 //global scope variables and dom references 
 const gameBoard = document.querySelector(".game-board");
-const playerTitles = document.getElementById("players");
+const playerstate = document.querySelector(".playerstate");
+const dialog = document.querySelector("dialog");
+let currentPlayer;
+let player1;
+let player2;
+
+/////////////////////////////////////////////////////////////////////////////////////////
+
+
 
 //setupGame IIFE
 const setupGame = (() => {
@@ -30,6 +38,11 @@ const setupGame = (() => {
             name: player2Name,
             key: 'O'
         };
+        console.log(player1.name, player2.name);
+        const player1Div = document.querySelector(".player1Name");
+        const player2Div = document.querySelector(".player2Name");
+        player1Div.textContent = `${player1.name}`;
+        player2Div.textContent = `${player2.name}`;
         return { player1, player2 };
     };
 
@@ -47,6 +60,8 @@ const setupGame = (() => {
 
     const resetBoard = () => {
         const cells = gameBoard.querySelectorAll(".cell");
+        const playerDiv1 = document.querySelector(".player1Name");
+        const playerDiv2 = document.querySelector(".player2Name");
         cells.forEach(cell => {
             cell.textContent = "";
         });
@@ -56,8 +71,13 @@ const setupGame = (() => {
                 board[row][col] = " ";
             }
         }
-        alert("game has ended!!");
+
         alert("......reseting board");
+        playerDiv1.textContent = " ";
+        playerDiv2.textContent = " ";
+        playerstate.textContent = " ";
+        playerstate.textContent;
+        dialog.showModal();
     };
 
     const getBoard = () => board;
@@ -67,14 +87,22 @@ const setupGame = (() => {
 
 
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
 // gameController  IIFE
 const gameController = (() => {
     //instantiate current player
-    let currentPlayer;
+
     //we are assuming the players parameter here is going to be an object
     //its not established here so it was confusing coming back to this code
     const initializePlayer = (players) => {
         currentPlayer = players.player1.key;
+        player1 = players.player1;
+        player2 = players.player2;
     };
 
     const setPiece = (cell) => {
@@ -93,12 +121,18 @@ const gameController = (() => {
         const col = parseInt(cell.dataset.col);
         setupGame.getBoard()[row][col] = currentPlayer;
         // Check for win or tie w function calls
-        checkForWin();
-        checkForTie();
+        setTimeout(() => {
+            checkForWin();
+            checkForTie();
+        }, "1000");
         console.log(boardInstance) //debugg yo
+        if (currentPlayer === "X") {
+            playerstate.textContent = `Player ${player1.name}'s turn`;
+        } else if (currentPlayer === "O") {
+            playerstate.textContent = `Player ${player2.name}'s turn`;
+        }
+
     };
-
-
 
     const checkForWin = () => {
         const board = setupGame.getBoard();
@@ -114,25 +148,19 @@ const gameController = (() => {
         // Check columns
         for (let i = 0; i < 3; i++) {
             if (board[0][i] !== " " && board[0][i] === board[1][i] && board[1][i] === board[2][i]) {
-                console.log("game end");
                 setupGame.resetBoard();
-                alert(`${currentPlayer} Wins!!`)
                 return;
             }
         }
 
         // Check diagonals
         if (board[0][0] !== " " && board[0][0] === board[1][1] && board[1][1] === board[2][2]) {
-            console.log("game end")
             setupGame.resetBoard();
-            alert(`${currentPlayer} Wins!!`)
             return;
         }
 
         if (board[0][2] !== " " && board[0][2] === board[1][1] && board[1][1] === board[2][0]) {
-            console.log("game end");
             setupGame.resetBoard();
-            alert(`${currentPlayer} Wins!!`)
             return;
         }
 
@@ -158,6 +186,11 @@ const gameController = (() => {
     return { setPiece, initializePlayer, currentPlayer };
 })();
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
 const uiController = (() => {
     const styleBoardElements = () => {
         const cells = document.querySelectorAll(".cell");
@@ -165,29 +198,50 @@ const uiController = (() => {
             cell.style.width = '150px';
             cell.style.height = '150px';
             cell.style.border = '1px solid black';
-            cell.style.display = 'inline-block';
+            cell.style.display = 'flex';
+            cell.style.flexDirection = "column";
+            cell.style.justifyContent = "center";
+            cell.style.alignItems = "center";
             cell.style.textAlign = 'center';
             cell.style.lineHeight = '50px';
-            cell.style.fontSize = '24px';
+            cell.style.fontSize = '50px';
         });
 
     };
 
     const handleClicks = () => {
+
         const clickedCells = document.querySelectorAll(".cell");
         //adds event listeners for all cells from "clickedCells"
         clickedCells.forEach(cell => {
             cell.addEventListener('click', () => {
                 // Pass the clicked cell element to setPiece
                 gameController.setPiece(cell);
-
             });
         });
     };
 
+    const modalActions = () => {
+        const closeBtn = document.getElementById("close");
+        closeBtn.addEventListener("click", () => {
+            dialog.close();
+            setTimeout(() => {
+                setupGame.getPlayerNames();
+            }, "500");
+        });
 
 
-    return { styleBoardElements, handleClicks };
+    }
+
+    return { styleBoardElements, handleClicks, modalActions };
+})();
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+const AIController = (() => {
+    //code for AI eventually
 })();
 
 
@@ -199,7 +253,9 @@ window.onload = () => {
     setupGame.createBoardElement();
     uiController.styleBoardElements();
     uiController.handleClicks();
+    uiController.modalActions();
 }
+
 
 
 
