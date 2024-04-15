@@ -55,6 +55,11 @@ const setupGame = (() => {
                 cell.dataset.col = col;
                 gameBoard.appendChild(cell);
             }
+            if (currentPlayer === "X") {
+                playerstate.textContent = `Player ${player2.name}'s turn`;
+            } else if (currentPlayer === "O") {
+                playerstate.textContent = `Player ${player1.name}'s turn`;
+            }
         }
     };
 
@@ -76,7 +81,7 @@ const setupGame = (() => {
         playerDiv1.textContent = " ";
         playerDiv2.textContent = " ";
         playerstate.textContent = " ";
-        playerstate.textContent;
+
         dialog.showModal();
     };
 
@@ -127,9 +132,9 @@ const gameController = (() => {
         }, "1000");
         console.log(boardInstance) //debugg yo
         if (currentPlayer === "X") {
-            playerstate.textContent = `Player ${player1.name}'s turn`;
-        } else if (currentPlayer === "O") {
             playerstate.textContent = `Player ${player2.name}'s turn`;
+        } else if (currentPlayer === "O") {
+            playerstate.textContent = `Player ${player1.name}'s turn`;
         }
 
     };
@@ -140,7 +145,6 @@ const gameController = (() => {
         for (let i = 0; i < 3; i++) {
             if (board[i][0] !== " " && board[i][0] === board[i][1] && board[i][1] === board[i][2]) {
                 setupGame.resetBoard();
-                alert(`${currentPlayer} Wins!!`)
                 return;
             }
         }
@@ -178,7 +182,7 @@ const gameController = (() => {
         }
         //checks for any free spaces
         if (freeSpaces === 0) {
-            console.log("It's a tie!");
+            alert("It's a tie!");
             setupGame.resetBoard();
         }
     };
@@ -210,7 +214,6 @@ const uiController = (() => {
     };
 
     const handleClicks = () => {
-
         const clickedCells = document.querySelectorAll(".cell");
         //adds event listeners for all cells from "clickedCells"
         clickedCells.forEach(cell => {
